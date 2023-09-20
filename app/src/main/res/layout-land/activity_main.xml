@@ -223,10 +223,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-                    android:text="-"
+                    android:text="—"
                     android:textAllCaps="false"
                     android:textColor="@color/orange"
-                    android:textSize="65sp"
+                    android:textSize="45sp"
                     android:background="@drawable/button_style"/>
             </LinearLayout>
             <LinearLayout
@@ -509,7 +509,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_weight="1"
                         android:text="."
-                        android:textSize="30sp"
+                        android:textSize="40sp"
                         android:background="@drawable/button_style_number"/>
                 </LinearLayout>
                 <LinearLayout
