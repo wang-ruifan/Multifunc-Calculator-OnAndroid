@@ -23,7 +23,7 @@
                 android:layout_height="match_parent"
                 android:textSize="20sp"
                 android:background="@color/white"
-                android:textColor="@color/black"/>
+                android:textColor="@color/red"/>
         </LinearLayout>
         <LinearLayout
         android:layout_width="match_parent"

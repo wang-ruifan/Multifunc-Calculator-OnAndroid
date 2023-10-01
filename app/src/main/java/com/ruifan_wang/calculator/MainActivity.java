@@ -139,17 +139,38 @@ public class MainActivity extends AppCompatActivity {
             state=1;
         }
         if(input_str.length()==1&&("0123456789ep".indexOf(input_str.charAt(0))== -1)){
-            textView_error.setText("没有输入数字或常数");
+            textView_error.setText("没有输入数字或常数！");
             state=1;
         }
         if(input_str.length()>1){
             if("kngltcs(123456789ep".indexOf(input_str.charAt(0))==-1){
-                textView_error.setText("首个字符无效");
+                textView_error.setText("首个字符无效！");
                 state=1;
             }
             for(int i=0;i<input_str.length()-1;i++){
                 if("+-*/".indexOf(input_str.charAt(i))>=0&&"kngltcs(0123456789ep".indexOf(input_str.charAt(i+1))==-1){
-                    
+                    textView_error.setText("运算符号不能重复出现！");
+                    state=1;
+                }
+                if(".".indexOf(input_str.charAt(i))>=0&&"0123456789".indexOf(input_str.charAt(i+1))==-1){
+                    textView_error.setText("小数点后只能为数字！");
+                    state=1;
+                }
+                if("kngltcs".indexOf(input_str.charAt(i))>=0&&"0123456789ep".indexOf(input_str.charAt(i+2))==-1){
+                    textView_error.setText("运算符号不能连续出现！");
+                    state=1;
+                }
+                if("123456789".indexOf(input_str.charAt(i))>=0&&"0123456789ep+-*/.)^".indexOf(input_str.charAt(i+1))==-1){
+                    textView_error.setText("数字后不能直接与运算符号相连接！");
+                    state=1;
+                }
+                if("(".indexOf(input_str.charAt(i))>=0&&"kngltcs()0123456789ep".indexOf(input_str.charAt(i+1))==-1){
+                    textView_error.setText("括号内的符号无效！");
+                    state=1;
+                }
+                if(")".indexOf(input_str.charAt(i))>=0&&"+-*/^)".indexOf(input_str.charAt(i+1))==-1){
+                    textView_error.setText("括号后的符号无效！");
+                    state=1;
                 }
             }
         }
