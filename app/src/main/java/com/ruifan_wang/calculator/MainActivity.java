@@ -1,5 +1,6 @@
 package com.ruifan_wang.calculator;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -7,12 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import java.nio.file.LinkPermission;
 import java.util.List;
 import java.util.Stack;
 import java.util.ArrayList;
-import java.util.Vector;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -156,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
         judge();
         if (!error_state) {
             textView_error.setText("输入有效");
+            List<String> infix=CharTransToInfix();
+            List<String> postfix=InfixTransToPostfix(infix);
         }
     }
 
@@ -170,6 +173,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if(input_str.charAt(0)=='0'&&input_str.charAt(1)=='0'){
             textView_error.setText("不能只输入0！");
+            error_state=true;
+        }
+        if("0123456789ep!)".indexOf(input_str.charAt(input_str.length()-1))==-1){
+            textView_error.setText("最后一位字符无效!");
             error_state=true;
         }
         if (input_str.length() > 1) {
@@ -222,10 +229,10 @@ public class MainActivity extends AppCompatActivity {
                         if ("(+-*/^kngltsc".indexOf(input_str.charAt(j)) >= 0) {
                             break;
                         }
-                        if (".".indexOf(input_str.charAt(j))==0) {
+                        if (input_str.charAt(j)=='.') {
                             state_dot = true;
                         }
-                        if (".".indexOf(input_str.charAt(j))==0 && state_dot) {
+                        if (input_str.charAt(j)=='.' && state_dot) {
                             textView_error.setText("输入多个小数点！");
                             error_state = true;
                         }
@@ -240,7 +247,103 @@ public class MainActivity extends AppCompatActivity {
                         error_state=true;
                     }
                 }
+                if(i>=2&&input_str.charAt(i)=='.'){
+                    int j=i-1;
+                    boolean state_dot=false;
+                    while(j>0){
+                        if ("(+-*/^kngltsc".indexOf(input_str.charAt(j)) >= 0) {
+                            break;
+                        }
+                        if (input_str.charAt(j)=='.') {
+                            state_dot = true;
+                        }
+                        j--;
+                    }
+                    if(state_dot){
+                        textView_error.setText("输入多个小数点！");
+                        error_state = true;
+                    }
+                }
             }
         }
     }
+
+    public List<String> CharTransToInfix(){
+        int infix_length=0;
+        List<String> infix_list=new ArrayList<>();
+        do{
+            char current= input_str.charAt(infix_length);
+            if("+-*/^kngltcs()ep".indexOf(input_str.charAt(infix_length))>=0){
+                infix_length++;
+                infix_list.add(current+"");
+            }
+            else if("0123456789".indexOf(input_str.charAt(infix_length))>=0){
+                StringBuilder str_temp=new StringBuilder();
+                while (infix_length<input_str.length()&&"0123456789.".indexOf(input_str.charAt(infix_length))>=0){
+                    str_temp.append(input_str.charAt(infix_length));
+                    infix_length++;
+                }
+                infix_list.add(str_temp.toString());
+            }
+        }while (infix_length<input_str.length());
+        return infix_list;
+    }
+    public List<String> InfixTransToPostfix(@NonNull List<String> list_infix) {
+        Stack<String> stack_temp = new Stack<>();
+        List<String> list_postfix = new ArrayList<>();
+        if (!list_infix.isEmpty()) {
+            for (int i=0;i<list_infix.size();i++){
+                if(IsNum(list_infix.get(i))){
+                    list_postfix.add(list_infix.get(i));
+                }
+                else if (list_infix.get(i).charAt(0)=='(') {
+                    stack_temp.push(list_infix.get(i));
+                }
+                else if (IsOp(list_infix.get(i))) {
+                    if(stack_temp.isEmpty()){
+                        stack_temp.push(list_infix.get(i));
+                    }
+                }
+                else{
+                    if(list_infix.get(i).charAt(0)==')'){
+                        while (stack_temp.peek().charAt(0)!='('){
+                            list_postfix.add(stack_temp.pop());
+                        }
+                    }
+                    else {
+                        if(priority(stack_temp.peek())<=priority(list_infix.get(i))){
+                            stack_temp.push(list_infix.get(i));
+                        }
+                        else
+                    }
+                }
+            }
+        }
+    }
+    public static boolean IsNum(@NonNull String string_temp){
+        return "0123456789ep".indexOf(string_temp.charAt(0))>=0;
+    }
+    public static boolean IsOp(@NonNull String string_temp){
+        return "0123456789ep".indexOf(string_temp.charAt(0))==-1;
+    }
+    public static int priority(String string_temp){
+        int result=0;
+        switch (string_temp){
+            case "+":result=1;
+            case "-":result=1;
+            case "*":result=2;
+            case "/":result=2;
+            case "^":result=3;
+            case "k":result=4;
+            case "n":result=4;
+            case "g":result=4;
+            case "l":result=4;
+            case "t":result=4;
+            case "c":result=4;
+            case "s":result=4;
+        }
+        return result;
+    }
+
 }
+""
