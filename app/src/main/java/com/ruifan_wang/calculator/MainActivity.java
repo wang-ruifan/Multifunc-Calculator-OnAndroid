@@ -79,18 +79,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tan(View view) {
-        editText_display.append("tan(");
-        input_str.append("t(");
+        editText_display.append("tan");
+        input_str.append("t");
     }
 
     public void cos(View view) {
-        editText_display.append("cos(");
-        input_str.append("c(");
+        editText_display.append("cos");
+        input_str.append("c");
     }
 
     public void sin(View view) {
-        editText_display.append("sin(");
-        input_str.append("s(");
+        editText_display.append("sin");
+        input_str.append("s");
     }
 
     public void e(View view) {
@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void ex(View view) {
-        editText_display.append("e^(");
-        input_str.append("e^(");
+        editText_display.append("e^");
+        input_str.append("e^");
     }
 
     public void x2(View view) {
@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void xy(View view) {
-        editText_display.append("^(");
-        input_str.append("^(");
+        editText_display.append("^");
+        input_str.append("^");
     }
 
     public void left_bracket(View view) {
@@ -157,10 +157,12 @@ public class MainActivity extends AppCompatActivity {
         error_state = false;
         judge();
         if (!error_state) {
-            textView_error.setText("输入有效");
             List<String> infix = CharTransToInfix();
             List<String> postfix = InfixTransToPostfix(infix);
-            editText_display.append("\n" + calculate(postfix));
+            double result =calculate(postfix);
+            editText_display.append("\n" + result);
+            input_str.delete(0,input_str.length());
+            input_str.append(result);
         }
     }
 
@@ -376,125 +378,116 @@ public class MainActivity extends AppCompatActivity {
 
     public double calculate(@NonNull List<String> list_postfix) {
         Stack<String> stack_temp = new Stack<>();
-        for(int i=0;i<list_postfix.size();i++){
-            if(IsNum(list_postfix.get(i))){
-                if(list_postfix.get(i).charAt(0)=='e'){
+        for (int i = 0; i < list_postfix.size(); i++) {
+            if (IsNum(list_postfix.get(i))) {
+                if (list_postfix.get(i).charAt(0) == 'e') {
                     stack_temp.push(String.valueOf(Math.E));
-                }
-                else if(list_postfix.get(i).charAt(0)=='p'){
+                } else if (list_postfix.get(i).charAt(0) == 'p') {
                     stack_temp.push(String.valueOf(Math.PI));
-                }
-                else{
+                } else {
                     stack_temp.push(list_postfix.get(i));
                 }
-            }
-            else if(IsOp(list_postfix.get(i))){
-                double temp=0;
-                switch (list_postfix.get(i)){
-                    case "+":{
-                        double num_1=Double.parseDouble(stack_temp.pop());
-                        double num_2=Double.parseDouble(stack_temp.pop());
-                        temp=num_1+num_2;
+            } else if (IsOp(list_postfix.get(i))) {
+                double temp = 0;
+                switch (list_postfix.get(i)) {
+                    case "+": {
+                        double num_1 = Double.parseDouble(stack_temp.pop());
+                        double num_2 = Double.parseDouble(stack_temp.pop());
+                        temp = num_1 + num_2;
                         break;
                     }
-                    case "-":{
-                        double num_1=Double.parseDouble(stack_temp.pop());
-                        double num_2=Double.parseDouble(stack_temp.pop());
-                        temp=num_1-num_2;
+                    case "-": {
+                        double num_1 = Double.parseDouble(stack_temp.pop());
+                        double num_2 = Double.parseDouble(stack_temp.pop());
+                        temp = num_1 - num_2;
                         break;
                     }
-                    case "*":{
-                        double num_1=Double.parseDouble(stack_temp.pop());
-                        double num_2=Double.parseDouble(stack_temp.pop());
-                        temp=num_1*num_2;
+                    case "*": {
+                        double num_1 = Double.parseDouble(stack_temp.pop());
+                        double num_2 = Double.parseDouble(stack_temp.pop());
+                        temp = num_1 * num_2;
                         break;
                     }
-                    case "/":{
-                        double num_1=Double.parseDouble(stack_temp.pop());
-                        double num_2=Double.parseDouble(stack_temp.pop());
-                        if(num_1!=0){
-                            temp=num_2/num_1;
-                        }
-                        else{
+                    case "/": {
+                        double num_1 = Double.parseDouble(stack_temp.pop());
+                        double num_2 = Double.parseDouble(stack_temp.pop());
+                        if (num_1 != 0) {
+                            temp = num_2 / num_1;
+                        } else {
                             textView_error.setText("被除数不能为0！");
-                            error_state=true;
+                            error_state = true;
                         }
                         break;
                     }
-                    case "^":{
-                        double num_1=Double.parseDouble(stack_temp.pop());
-                        double num_2=Double.parseDouble(stack_temp.pop());
-                        temp=Math.pow(num_2,num_1);
+                    case "^": {
+                        double num_1 = Double.parseDouble(stack_temp.pop());
+                        double num_2 = Double.parseDouble(stack_temp.pop());
+                        temp = Math.pow(num_2, num_1);
                         break;
                     }
-                    case "kngltcs":{
-                        double num=Double.parseDouble(stack_temp.pop());
-                        temp=Math.sqrt(num);
+                    case "k": {
+                        double num = Double.parseDouble(stack_temp.pop());
+                        temp = Math.sqrt(num);
                         break;
                     }
-                    case "n":{
-                        double num=Double.parseDouble(stack_temp.pop());
-                        if(num>0){
-                            temp=Math.log(num);
-                        }
-                        else {
+                    case "n": {
+                        double num = Double.parseDouble(stack_temp.pop());
+                        if (num > 0) {
+                            temp = Math.log(num);
+                        } else {
                             textView_error.setText("对数的真数不能为非正数！");
-                            error_state=true;
+                            error_state = true;
                         }
                         break;
                     }
-                    case "g":{
-                        double num=Double.parseDouble(stack_temp.pop());
-                        if(num>0){
-                            temp=Math.log(num)/Math.log(10);
-                        }
-                        else {
+                    case "g": {
+                        double num = Double.parseDouble(stack_temp.pop());
+                        if (num > 0) {
+                            temp = Math.log(num) / Math.log(10);
+                        } else {
                             textView_error.setText("对数的真数不能为非正数！");
-                            error_state=true;
+                            error_state = true;
                         }
                         break;
                     }
-                    case "l":{
-                        double num=Double.parseDouble(stack_temp.pop());
-                        if(num>0){
-                            temp=Math.log(num)/Math.log(2);
-                        }
-                        else {
+                    case "l": {
+                        double num = Double.parseDouble(stack_temp.pop());
+                        if (num > 0) {
+                            temp = Math.log(num) / Math.log(2);
+                        } else {
                             textView_error.setText("对数的真数不能为非正数！");
-                            error_state=true;
+                            error_state = true;
                         }
                         break;
                     }
-                    case "t":{
-                        double num=Double.parseDouble(stack_temp.pop());
-                        if(Math.cos(num)!=0){
-                            temp=Math.tan(num);
-                        }
-                        else{
+                    case "t": {
+                        double num = Double.parseDouble(stack_temp.pop());
+                        if (Math.cos(num) != 0) {
+                            temp = Math.tan(num);
+                        } else {
                             textView_error.setText("正切函数的输入值不能为+-π");
-                            error_state=true;
+                            error_state = true;
                         }
                         break;
                     }
-                    case "c":{
-                        double num=Double.parseDouble(stack_temp.pop());
-                        temp=Math.cos(num);
+                    case "c": {
+                        double num = Double.parseDouble(stack_temp.pop());
+                        temp = Math.cos(num);
                         break;
                     }
-                    case "s":{
-                        double num=Double.parseDouble(stack_temp.pop());
-                        temp=Math.sin(num);
+                    case "s": {
+                        double num = Double.parseDouble(stack_temp.pop());
+                        temp = Math.sin(num);
                         break;
                     }
                 }
-                stack_temp.push(""+temp);
+                stack_temp.push("" + temp);
             }
         }
-        if(!error_state){
-            if(!stack_temp.isEmpty()){
+        if (!error_state) {
+            if (!stack_temp.isEmpty()) {
                 return Double.parseDouble(stack_temp.pop());
-            }
-            else return 0;
+            } else return 0;
         }
         return 0;
     }
