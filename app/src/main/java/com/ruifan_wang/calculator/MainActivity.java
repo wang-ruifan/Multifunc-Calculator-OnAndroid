@@ -54,23 +54,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sqrt(View view) {
-        editText_display.append("√(");
-        input_str.append("k(");
+        editText_display.append("√");
+        input_str.append("k");
     }
 
     public void ln(View view) {
-        editText_display.append("ln(");
-        input_str.append("n(");
+        editText_display.append("ln");
+        input_str.append("n");
     }
 
     public void lg(View view) {
-        editText_display.append("lg(");
-        input_str.append("g(");
+        editText_display.append("lg");
+        input_str.append("g");
     }
 
     public void log2(View view) {
-        editText_display.append("log2(");
-        input_str.append("l(");
+        editText_display.append("log2");
+        input_str.append("l");
     }
 
     public void pi(View view) {
