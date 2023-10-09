@@ -169,13 +169,13 @@
                     android:background="@drawable/button_style"/>
 
                 <Button
-                    android:id="@+id/btn_log"
-                    android:onClick="log"
+                    android:id="@+id/btn_log2"
+                    android:onClick="log2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="1dp"
                     android:layout_weight="1"
-                    android:text="log"
+                    android:text="log2"
                     android:textAllCaps="false"
                     android:textColor="@color/blue"
                     android:textSize="20sp"
