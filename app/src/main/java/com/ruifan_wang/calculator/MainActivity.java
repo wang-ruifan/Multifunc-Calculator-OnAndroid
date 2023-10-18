@@ -11,7 +11,6 @@ import android.widget.EditText;
 
 import org.jetbrains.annotations.Contract;
 
-import java.nio.file.LinkPermission;
 import java.util.List;
 import java.util.Stack;
 import java.util.ArrayList;
@@ -68,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
         input_str.append("g");
     }
 
-    public void log2(View view) {
-        editText_display.append("log2");
-        input_str.append("l");
+    public void fact(View view) {
+        editText_display.append("!");
+        input_str.append("!");
     }
 
     public void pi(View view) {
@@ -155,14 +154,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void equal(View view) {
         error_state = false;
-        judge();
+        //judge();
         if (!error_state) {
             List<String> infix = CharTransToInfix();
             List<String> postfix = InfixTransToPostfix(infix);
             double result =calculate(postfix);
-            editText_display.append("\n" + result);
-            input_str.delete(0,input_str.length());
-            input_str.append(result);
+            textView_error.setText(postfix.toString());
+            if((int)result-result==0){
+                editText_display.append("\n" + (int)result);
+                input_str.delete(0,input_str.length());
+                input_str.append((int)result);
+            }else{
+                editText_display.append("\n" + result);
+                input_str.delete(0,input_str.length());
+                input_str.append(result);
+            }
         }
     }
 
@@ -184,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
             error_state = true;
         }
         if (input_str.length() > 1) {
-            if ("kngltcs(123456789ep".indexOf(input_str.charAt(0)) == -1) {
+            if ("kngltcs(123456789ep-".indexOf(input_str.charAt(0)) == -1) {
                 textView_error.setText("首个字符无效！");
                 error_state = true;
             }
@@ -201,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     textView_error.setText("运算符号不能连续出现！");
                     error_state = true;
                 }
-                if ("123456789".indexOf(input_str.charAt(i)) >= 0 && "0123456789ep+-*/.)^".indexOf(input_str.charAt(i + 1)) == -1) {
+                if ("123456789".indexOf(input_str.charAt(i)) >= 0 && "0123456789ep+-*/.)^!".indexOf(input_str.charAt(i + 1)) == -1) {
                     textView_error.setText("数字后不能直接与运算符号相连接！");
                     error_state = true;
                 }
@@ -217,15 +223,19 @@ public class MainActivity extends AppCompatActivity {
                     textView_error.setText("小数点后的符号无效！");
                     error_state = true;
                 }
+                if (input_str.charAt(i) == '!' && "+-*/^)".indexOf(input_str.charAt(i + 1)) == -1) {
+                    textView_error.setText("阶乘后的符号无效!");
+                    error_state = true;
+                }
                 if (i >= 1 && input_str.charAt(i) == '0') {
                     int zero_position = i;
                     int j = i - 1;
                     boolean state_dot = false;
-                    if ("0123456789.".indexOf(input_str.charAt(zero_position - 1)) == -1 && "+-*/.^".indexOf(input_str.charAt(zero_position + 1)) == -1) {
+                    if ("0123456789.".indexOf(input_str.charAt(zero_position - 1)) == -1 && "+-*/.^!)".indexOf(input_str.charAt(zero_position + 1)) == -1) {
                         textView_error.setText("0无效");
                         error_state = true;
                     }
-                    if (input_str.charAt(zero_position - 1) == '.' && "0123456789+-*/^".indexOf(input_str.charAt(zero_position + 1)) == -1) {
+                    if (input_str.charAt(zero_position - 1) == '.' && "0123456789+-*/^)".indexOf(input_str.charAt(zero_position + 1)) == -1) {
                         textView_error.setText("0无效");
                         error_state = true;
                     }
@@ -277,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         List<String> infix_list = new ArrayList<>();
         do {
             char current = input_str.charAt(infix_length);
-            if ("+-*/^kngltcs()ep".indexOf(input_str.charAt(infix_length)) >= 0) {
+            if ("+-*/^kng!tcs()ep".indexOf(input_str.charAt(infix_length)) >= 0) {
                 infix_length++;
                 infix_list.add(current + "");
             } else if ("0123456789".indexOf(input_str.charAt(infix_length)) >= 0) {
@@ -292,86 +302,72 @@ public class MainActivity extends AppCompatActivity {
         return infix_list;
     }
 
+
+
+    private boolean IsOp(@NonNull String string_temp) {
+        String operators = "+-*/^!kngtcs";
+        return operators.contains(string_temp);
+    }
+
+    public static boolean IsNum(@NonNull String string_temp) {
+        return string_temp.matches("[0-9.]+");
+    }
+
+
     public List<String> InfixTransToPostfix(@NonNull List<String> list_infix) {
         Stack<String> stack_temp = new Stack<>();
         List<String> list_postfix = new ArrayList<>();
-        if (!list_infix.isEmpty()) {
-            for (int i = 0; i < list_infix.size(); i++) {
-                if (IsNum(list_infix.get(i))) {
-                    list_postfix.add(list_infix.get(i));
-                } else if (list_infix.get(i).charAt(0) == '(') {
-                    stack_temp.push(list_infix.get(i));
-                } else if (IsOp(list_infix.get(i))) {
-                    if (stack_temp.isEmpty()) {
-                        stack_temp.push(list_infix.get(i));
-                    }
-                } else {
-                    if (list_infix.get(i).charAt(0) == ')') {
-                        while (stack_temp.peek().charAt(0) != '(') {
-                            list_postfix.add(stack_temp.pop());
-                        }
-                        stack_temp.pop();
-                    } else {
-                        if (priority(stack_temp.peek()) <= priority(list_infix.get(i))) {
-                            stack_temp.push(list_infix.get(i));
-                        } else {
-                            while (!stack_temp.isEmpty() && !"(".equals(stack_temp.peek())) {
-                                if (priority(list_infix.get(i)) <= priority(stack_temp.peek())) {
-                                    list_postfix.add(stack_temp.pop());
-                                }
-                            }
-                            if (stack_temp.isEmpty() || stack_temp.peek().charAt(0) == ')') {
-                                stack_temp.push(list_infix.get(i));
-                            }
-                        }
-                    }
+        for (int i = 0; i < list_infix.size(); i++) {
+            String token = list_infix.get(i);
+            if (IsNum(token)) {
+                list_postfix.add(token);
+            } else if (token.equals("(")) {
+                stack_temp.push(token);
+            } else if (IsOp(token)) {
+                while (!stack_temp.isEmpty() && !stack_temp.peek().equals("(") && priority(stack_temp.peek()) >= priority(token)) {
+                    list_postfix.add(stack_temp.pop());
+                }
+                stack_temp.push(token);
+            } else if (token.equals(")")) {
+                while (!stack_temp.isEmpty() && !stack_temp.peek().equals("(")) {
+                    list_postfix.add(stack_temp.pop());
+                }
+                if (!stack_temp.isEmpty() && stack_temp.peek().equals("(")) {
+                    stack_temp.pop();
                 }
             }
-            while (!stack_temp.isEmpty()) {
-                list_postfix.add(stack_temp.pop());
-            }
-        } else {
-            editText_display.setText("");
+        }
+        while (!stack_temp.isEmpty()) {
+            list_postfix.add(stack_temp.pop());
         }
         return list_postfix;
     }
 
-    public static boolean IsNum(@NonNull String string_temp) {
-        return "0123456789ep".indexOf(string_temp.charAt(0)) >= 0;
-    }
-
-    public static boolean IsOp(@NonNull String string_temp) {
-        return "0123456789ep".indexOf(string_temp.charAt(0)) == -1;
-    }
 
     @Contract(pure = true)
     public static int priority(@NonNull String string_temp) {
         int result = 0;
         switch (string_temp) {
             case "+":
-                result = 1;
             case "-":
                 result = 1;
+                break;
             case "*":
-                result = 2;
             case "/":
                 result = 2;
+                break;
             case "^":
                 result = 3;
+                break;
             case "k":
-                result = 4;
             case "n":
-                result = 4;
             case "g":
-                result = 4;
-            case "l":
-                result = 4;
+            case "!":
             case "t":
-                result = 4;
             case "c":
-                result = 4;
             case "s":
                 result = 4;
+                break;
         }
         return result;
     }
@@ -391,28 +387,28 @@ public class MainActivity extends AppCompatActivity {
                 double temp = 0;
                 switch (list_postfix.get(i)) {
                     case "+": {
-                        double num_1 = Double.parseDouble(stack_temp.pop());
                         double num_2 = Double.parseDouble(stack_temp.pop());
+                        double num_1 = Double.parseDouble(stack_temp.pop());
                         temp = num_1 + num_2;
                         break;
                     }
                     case "-": {
-                        double num_1 = Double.parseDouble(stack_temp.pop());
                         double num_2 = Double.parseDouble(stack_temp.pop());
+                        double num_1 = Double.parseDouble(stack_temp.pop());
                         temp = num_1 - num_2;
                         break;
                     }
                     case "*": {
-                        double num_1 = Double.parseDouble(stack_temp.pop());
                         double num_2 = Double.parseDouble(stack_temp.pop());
+                        double num_1 = Double.parseDouble(stack_temp.pop());
                         temp = num_1 * num_2;
                         break;
                     }
                     case "/": {
-                        double num_1 = Double.parseDouble(stack_temp.pop());
                         double num_2 = Double.parseDouble(stack_temp.pop());
-                        if (num_1 != 0) {
-                            temp = num_2 / num_1;
+                        double num_1 = Double.parseDouble(stack_temp.pop());
+                        if (num_2 != 0) {
+                            temp = num_1 / num_2;
                         } else {
                             textView_error.setText("被除数不能为0！");
                             error_state = true;
@@ -420,9 +416,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                     case "^": {
-                        double num_1 = Double.parseDouble(stack_temp.pop());
                         double num_2 = Double.parseDouble(stack_temp.pop());
-                        temp = Math.pow(num_2, num_1);
+                        double num_1 = Double.parseDouble(stack_temp.pop());
+                        temp = Math.pow(num_1, num_2);
                         break;
                     }
                     case "k": {
@@ -450,20 +446,26 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case "l": {
+                    case "!": {
                         double num = Double.parseDouble(stack_temp.pop());
-                        if (num > 0) {
-                            temp = Math.log(num) / Math.log(2);
+                        if (num ==0||num==1) {
+                            temp=1;
+                        } else if (num==(int)num&&num>1) {
+                            temp=1;
+                            for(int i1=(int)num;i1>1;i1--){
+                                temp*=i1;
+                            }
                         } else {
-                            textView_error.setText("对数的真数不能为非正数！");
+                            textView_error.setText("阶乘必须为自然数！");
                             error_state = true;
                         }
                         break;
                     }
                     case "t": {
                         double num = Double.parseDouble(stack_temp.pop());
-                        if (Math.cos(num) != 0) {
-                            temp = Math.tan(num);
+                        double pi=(double) Math.PI;
+                        if (Math.abs(num)%pi!=pi/2) {
+                            temp = Math.sin(num)/Math.cos(num);
                         } else {
                             textView_error.setText("正切函数的输入值不能为+-π");
                             error_state = true;
