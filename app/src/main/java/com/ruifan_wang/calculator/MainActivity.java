@@ -134,12 +134,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void subtract(View view) {
         editText_display.append("-");
-        input_str.append("-");
+        if(input_str.length()==0){
+            input_str.append("0-");
+        }else {
+            input_str.append("-");
+        }
     }
 
     public void add(View view) {
         editText_display.append("+");
-        input_str.append("+");
+        if(input_str.length()==0){
+            input_str.append("0+");
+        }else {
+            input_str.append("+");
+        }
     }
 
     public void percentage(View view) {
