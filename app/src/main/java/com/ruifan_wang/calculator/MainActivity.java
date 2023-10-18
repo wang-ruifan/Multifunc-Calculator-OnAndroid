@@ -154,20 +154,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void equal(View view) {
         error_state = false;
-        //judge();
+        judge();
         if (!error_state) {
             List<String> infix = CharTransToInfix();
             List<String> postfix = InfixTransToPostfix(infix);
+            /*textView_error.setText(infix.toString());
+            editText_display.append("\n"+postfix);*/
             double result =calculate(postfix);
-            textView_error.setText(postfix.toString());
-            if((int)result-result==0){
-                editText_display.append("\n" + (int)result);
-                input_str.delete(0,input_str.length());
-                input_str.append((int)result);
-            }else{
-                editText_display.append("\n" + result);
-                input_str.delete(0,input_str.length());
-                input_str.append(result);
+            if(result%1<=0.0000000000001)result=(int)result;
+            if(!error_state){
+                if((int)result-result==0){
+                    editText_display.append("\n" + (int)result);
+                    input_str.delete(0,input_str.length());
+                    input_str.append((int)result);
+                }else{
+                    editText_display.append("\n" + result);
+                    input_str.delete(0,input_str.length());
+                    input_str.append(result);
+                }
             }
         }
     }
@@ -176,21 +180,25 @@ public class MainActivity extends AppCompatActivity {
         if (input_str.length() == 0) {
             textView_error.setText("输入不能为空！");
             error_state = true;
+            return;
         }
         if (input_str.length() == 1 && ("0123456789ep".indexOf(input_str.charAt(0)) == -1)) {
             textView_error.setText("没有输入数字或常数！");
             error_state = true;
+            return;
         }
-        if (input_str.charAt(0) == '0' && input_str.charAt(1) == '0') {
+        if (input_str.length() == 1 && input_str.charAt(0) == '0') {
             textView_error.setText("不能只输入0！");
             error_state = true;
+            return;
         }
         if ("0123456789ep!)".indexOf(input_str.charAt(input_str.length() - 1)) == -1) {
             textView_error.setText("最后一位字符无效!");
             error_state = true;
+            return;
         }
         if (input_str.length() > 1) {
-            if ("kngltcs(123456789ep-".indexOf(input_str.charAt(0)) == -1) {
+            if ("kngltcs(0123456789ep-".indexOf(input_str.charAt(0)) == -1) {
                 textView_error.setText("首个字符无效！");
                 error_state = true;
             }
@@ -202,81 +210,6 @@ public class MainActivity extends AppCompatActivity {
                 if (".".indexOf(input_str.charAt(i)) >= 0 && "0123456789".indexOf(input_str.charAt(i + 1)) == -1) {
                     textView_error.setText("小数点后只能为数字！");
                     error_state = true;
-                }
-                if ("kngltcs".indexOf(input_str.charAt(i)) >= 0 && "0123456789ep".indexOf(input_str.charAt(i + 2)) == -1) {
-                    textView_error.setText("运算符号不能连续出现！");
-                    error_state = true;
-                }
-                if ("123456789".indexOf(input_str.charAt(i)) >= 0 && "0123456789ep+-*/.)^!".indexOf(input_str.charAt(i + 1)) == -1) {
-                    textView_error.setText("数字后不能直接与运算符号相连接！");
-                    error_state = true;
-                }
-                if ("(".indexOf(input_str.charAt(i)) >= 0 && "kngltcs()0123456789ep".indexOf(input_str.charAt(i + 1)) == -1) {
-                    textView_error.setText("括号内的符号无效！");
-                    error_state = true;
-                }
-                if (")".indexOf(input_str.charAt(i)) >= 0 && "+-*/^)".indexOf(input_str.charAt(i + 1)) == -1) {
-                    textView_error.setText("括号后的符号无效！");
-                    error_state = true;
-                }
-                if ("ep".indexOf(input_str.charAt(i)) >= 0 && "+-*/^)".indexOf(input_str.charAt(i + 1)) == -1) {
-                    textView_error.setText("小数点后的符号无效！");
-                    error_state = true;
-                }
-                if (input_str.charAt(i) == '!' && "+-*/^)".indexOf(input_str.charAt(i + 1)) == -1) {
-                    textView_error.setText("阶乘后的符号无效!");
-                    error_state = true;
-                }
-                if (i >= 1 && input_str.charAt(i) == '0') {
-                    int zero_position = i;
-                    int j = i - 1;
-                    boolean state_dot = false;
-                    if ("0123456789.".indexOf(input_str.charAt(zero_position - 1)) == -1 && "+-*/.^!)".indexOf(input_str.charAt(zero_position + 1)) == -1) {
-                        textView_error.setText("0无效");
-                        error_state = true;
-                    }
-                    if (input_str.charAt(zero_position - 1) == '.' && "0123456789+-*/^)".indexOf(input_str.charAt(zero_position + 1)) == -1) {
-                        textView_error.setText("0无效");
-                        error_state = true;
-                    }
-                    while (j > 0) {
-                        if ("(+-*/^kngltsc".indexOf(input_str.charAt(j)) >= 0) {
-                            break;
-                        }
-                        if (input_str.charAt(j) == '.') {
-                            state_dot = true;
-                        }
-                        if (input_str.charAt(j) == '.' && state_dot) {
-                            textView_error.setText("输入多个小数点！");
-                            error_state = true;
-                        }
-                        j--;
-                    }
-                    if ((!state_dot && input_str.charAt(j) == '0') || "0123456789+-*/.!^)".indexOf(input_str.charAt(zero_position + 1)) == -1) {
-                        textView_error.setText("0无效！");
-                        error_state = true;
-                    }
-                    if (state_dot && "0123456789+-*/.^)".indexOf(input_str.charAt(zero_position + 1)) == -1) {
-                        textView_error.setText("0无效！");
-                        error_state = true;
-                    }
-                }
-                if (i >= 2 && input_str.charAt(i) == '.') {
-                    int j = i - 1;
-                    boolean state_dot = false;
-                    while (j > 0) {
-                        if ("(+-*/^kngltsc".indexOf(input_str.charAt(j)) >= 0) {
-                            break;
-                        }
-                        if (input_str.charAt(j) == '.') {
-                            state_dot = true;
-                        }
-                        j--;
-                    }
-                    if (state_dot) {
-                        textView_error.setText("输入多个小数点！");
-                        error_state = true;
-                    }
                 }
             }
         }
@@ -302,17 +235,14 @@ public class MainActivity extends AppCompatActivity {
         return infix_list;
     }
 
-
-
     private boolean IsOp(@NonNull String string_temp) {
         String operators = "+-*/^!kngtcs";
         return operators.contains(string_temp);
     }
 
     public static boolean IsNum(@NonNull String string_temp) {
-        return string_temp.matches("[0-9.]+");
+        return string_temp.matches("[0-9.]+") || string_temp.equals("p") || string_temp.equals("e");
     }
-
 
     public List<String> InfixTransToPostfix(@NonNull List<String> list_infix) {
         Stack<String> stack_temp = new Stack<>();
@@ -343,8 +273,6 @@ public class MainActivity extends AppCompatActivity {
         return list_postfix;
     }
 
-
-    @Contract(pure = true)
     public static int priority(@NonNull String string_temp) {
         int result = 0;
         switch (string_temp) {
@@ -464,11 +392,11 @@ public class MainActivity extends AppCompatActivity {
                     case "t": {
                         double num = Double.parseDouble(stack_temp.pop());
                         double pi=(double) Math.PI;
-                        if (Math.abs(num)%pi!=pi/2) {
-                            temp = Math.sin(num)/Math.cos(num);
-                        } else {
-                            textView_error.setText("正切函数的输入值不能为+-π");
+                        if (Math.abs(num)%pi==pi/2) {
+                            textView_error.setText("正切函数的输入值不能为(k+1/2)π!");
                             error_state = true;
+                        } else {
+                            temp = Math.sin(num)/Math.cos(num);
                         }
                         break;
                     }
