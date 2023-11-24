@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
     private void showLog(){
         Intent intent=new Intent(this,LogActivity.class);
         intent.putExtra("count",viewModel.getCount());
-        intent.putExtra("log",viewModel.Log_history);
+        intent.putExtra("log",viewModel.log_history);
         startActivity(intent);
     }
     private void clearLog(){
-        viewModel.clearLog_history();
+        viewModel.clearlog_history();
         Toast.makeText(this, String.format("历史记录已清除"), Toast.LENGTH_LONG).show();
     }
     public void num(View view) {
