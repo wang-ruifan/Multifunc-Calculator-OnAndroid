@@ -9,4 +9,10 @@
     <color name="gray">#FF7B7B7B</color>
     <color name="orange">#FFEE6363</color>
     <color name="light_gray">#FFEAEAEA</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="button_background">#FFFFFFFF</color>
+    <color name="button_text">#FF000000</color>
+    <color name="textView_background">#FFFFFFFF</color>
+    <color name="textView_text">#FF000000</color>
 </resources>

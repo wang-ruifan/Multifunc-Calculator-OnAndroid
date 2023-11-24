@@ -2,14 +2,19 @@ package com.ruifan_wang.calculator;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuProvider;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.EditText;
-
-import org.jetbrains.annotations.Contract;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Stack;
@@ -21,143 +26,177 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText_display;
     private TextView textView_error;
     private boolean error_state;
-    private final StringBuilder input_str = new StringBuilder();
+    private MainMenu menu;
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         setContentView(R.layout.activity_main);
         editText_display = (EditText) findViewById(R.id.editView_display);
         textView_error = (TextView) findViewById(R.id.textView_error);
+        menu=new MainMenu();
+        addMenuProvider(menu);
     }
 
+    private class MainMenu implements MenuProvider{
+        @Override
+        public void onCreateMenu(Menu menu, MenuInflater menuInflater){
+            menuInflater.inflate(R.menu.activity_main,menu);
+        }
+        @Override
+        public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+            if(menuItem.getItemId()==R.id.btn_log) {
+                showLog();
+                return true;
+            } else if(menuItem.getItemId()==R.id.btn_clear_log) {
+                clearLog();
+                return true;
+            } else{
+                    return false;
+            }
+        }
+    }
+    private void showLog(){
+        Intent intent=new Intent(this,LogActivity.class);
+        intent.putExtra("count",viewModel.getCount());
+        intent.putExtra("log",viewModel.Log_history);
+        startActivity(intent);
+    }
+    private void clearLog(){
+        viewModel.clearLog_history();
+        Toast.makeText(this, String.format("历史记录已清除"), Toast.LENGTH_LONG).show();
+    }
     public void num(View view) {
         Button button = (Button) view;
         editText_display.append(button.getText());
-        input_str.append(button.getText());
+        viewModel.input_str.append(button.getText());
     }
 
     public void clear(View view) {
         editText_display.setText(null);
         textView_error.setText(null);
-        input_str.delete(0, input_str.length());
+        viewModel.input_str.delete(0, viewModel.input_str.length());
     }
 
     public void delete(View view) {
-        if (editText_display.length() != 0 && input_str.length() != 0) {
+        if (editText_display.length() != 0 && viewModel.input_str.length() != 0) {
             String now_display = editText_display.getText().toString();
             editText_display.setText(now_display.substring(0, now_display.length() - 1));
-            input_str.deleteCharAt(input_str.length() - 1);
+            viewModel.input_str.deleteCharAt(viewModel.input_str.length() - 1);
+        } else if (editText_display.length() == 0&&viewModel.input_str.length()!=0) {
+            viewModel.input_str.delete(0, viewModel.input_str.length());
         }
         textView_error.setText(null);
     }
 
     public void sqrt(View view) {
         editText_display.append("√");
-        input_str.append("k");
+        viewModel.input_str.append("k");
     }
 
     public void ln(View view) {
         editText_display.append("ln");
-        input_str.append("n");
+        viewModel.input_str.append("n");
     }
 
     public void lg(View view) {
         editText_display.append("lg");
-        input_str.append("g");
+        viewModel.input_str.append("g");
     }
 
     public void fact(View view) {
         editText_display.append("!");
-        input_str.append("!");
+        viewModel.input_str.append("!");
     }
 
     public void pi(View view) {
         editText_display.append("π");
-        input_str.append("p");
+        viewModel.input_str.append("p");
     }
 
     public void tan(View view) {
         editText_display.append("tan");
-        input_str.append("t");
+        viewModel.input_str.append("t");
     }
 
     public void cos(View view) {
         editText_display.append("cos");
-        input_str.append("c");
+        viewModel.input_str.append("c");
     }
 
     public void sin(View view) {
         editText_display.append("sin");
-        input_str.append("s");
+        viewModel.input_str.append("s");
     }
 
     public void e(View view) {
         editText_display.append("e");
-        input_str.append("e");
+        viewModel.input_str.append("e");
     }
 
     public void ex(View view) {
         editText_display.append("e^");
-        input_str.append("e^");
+        viewModel.input_str.append("e^");
     }
 
     public void x2(View view) {
         editText_display.append("^2");
-        input_str.append("^2");
+        viewModel.input_str.append("^2");
     }
 
     public void xy(View view) {
         editText_display.append("^");
-        input_str.append("^");
+        viewModel.input_str.append("^");
     }
 
     public void left_bracket(View view) {
         editText_display.append("(");
-        input_str.append("(");
+        viewModel.input_str.append("(");
     }
 
     public void right_bracket(View view) {
         editText_display.append(")");
-        input_str.append(")");
+        viewModel.input_str.append(")");
     }
 
     public void divide(View view) {
         editText_display.append("÷");
-        input_str.append("/");
+        viewModel.input_str.append("/");
     }
 
     public void multiply(View view) {
         editText_display.append("×");
-        input_str.append("*");
+        viewModel.input_str.append("*");
     }
 
     public void subtract(View view) {
         editText_display.append("-");
-        if(input_str.length()==0){
-            input_str.append("0-");
+        if(viewModel.input_str.length()==0){
+            viewModel.input_str.append("0-");
         }else {
-            input_str.append("-");
+            viewModel.input_str.append("-");
         }
     }
 
     public void add(View view) {
         editText_display.append("+");
-        if(input_str.length()==0){
-            input_str.append("0+");
+        if(viewModel.input_str.length()==0){
+            viewModel.input_str.append("0+");
         }else {
-            input_str.append("+");
+            viewModel.input_str.append("+");
         }
     }
 
     public void percentage(View view) {
         editText_display.append("%");
-        input_str.append("*0.01");
+        viewModel.input_str.append("*0.01");
     }
 
     public void dot(View view) {
         editText_display.append(".");
-        input_str.append(".");
+        viewModel.input_str.append(".");
     }
 
     public void equal(View view) {
@@ -171,51 +210,60 @@ public class MainActivity extends AppCompatActivity {
             double result =calculate(postfix);
             if(result%1<=0.0000000000001)result=(int)result;
             if(!error_state){
+                viewModel.setLog(viewModel.input_str.toString(),result);
                 if((int)result-result==0){
                     editText_display.append("\n" + (int)result);
-                    input_str.delete(0,input_str.length());
-                    input_str.append((int)result);
+                    viewModel.input_str.delete(0,viewModel.input_str.length());
+                    if(result<0){
+                        viewModel.input_str.append("0"+(int)result);
+                    }else{
+                        viewModel.input_str.append((int)result);
+                    }
                 }else{
                     editText_display.append("\n" + result);
-                    input_str.delete(0,input_str.length());
-                    input_str.append(result);
+                    viewModel.input_str.delete(0,viewModel.input_str.length());
+                    if(result<0){
+                        viewModel.input_str.append("0"+result);
+                    }else{
+                        viewModel.input_str.append(result);
+                    }
                 }
             }
         }
     }
 
     public void judge() {
-        if (input_str.length() == 0) {
+        if (viewModel.input_str.length() == 0) {
             textView_error.setText("输入不能为空！");
             error_state = true;
             return;
         }
-        if (input_str.length() == 1 && ("0123456789ep".indexOf(input_str.charAt(0)) == -1)) {
+        if (viewModel.input_str.length() == 1 && ("0123456789ep".indexOf(viewModel.input_str.charAt(0)) == -1)) {
             textView_error.setText("没有输入数字或常数！");
             error_state = true;
             return;
         }
-        if (input_str.length() == 1 && input_str.charAt(0) == '0') {
+        if (viewModel.input_str.length() == 1 && viewModel.input_str.charAt(0) == '0') {
             textView_error.setText("不能只输入0！");
             error_state = true;
             return;
         }
-        if ("0123456789ep!)".indexOf(input_str.charAt(input_str.length() - 1)) == -1) {
+        if ("0123456789ep!)".indexOf(viewModel.input_str.charAt(viewModel.input_str.length() - 1)) == -1) {
             textView_error.setText("最后一位字符无效!");
             error_state = true;
             return;
         }
-        if (input_str.length() > 1) {
-            if ("kngltcs(0123456789ep-".indexOf(input_str.charAt(0)) == -1) {
+        if (viewModel.input_str.length() > 1) {
+            if ("kngltcs(0123456789ep-".indexOf(viewModel.input_str.charAt(0)) == -1) {
                 textView_error.setText("首个字符无效！");
                 error_state = true;
             }
-            for (int i = 0; i < input_str.length() - 1; i++) {
-                if ("+-*/".indexOf(input_str.charAt(i)) >= 0 && "kngltcs(0123456789ep".indexOf(input_str.charAt(i + 1)) == -1) {
+            for (int i = 0; i < viewModel.input_str.length() - 1; i++) {
+                if ("+-*/".indexOf(viewModel.input_str.charAt(i)) >= 0 && "kngltcs(0123456789ep".indexOf(viewModel.input_str.charAt(i + 1)) == -1) {
                     textView_error.setText("运算符号不能重复出现！");
                     error_state = true;
                 }
-                if (".".indexOf(input_str.charAt(i)) >= 0 && "0123456789".indexOf(input_str.charAt(i + 1)) == -1) {
+                if (".".indexOf(viewModel.input_str.charAt(i)) >= 0 && "0123456789".indexOf(viewModel.input_str.charAt(i + 1)) == -1) {
                     textView_error.setText("小数点后只能为数字！");
                     error_state = true;
                 }
@@ -227,19 +275,19 @@ public class MainActivity extends AppCompatActivity {
         int infix_length = 0;
         List<String> infix_list = new ArrayList<>();
         do {
-            char current = input_str.charAt(infix_length);
-            if ("+-*/^kng!tcs()ep".indexOf(input_str.charAt(infix_length)) >= 0) {
+            char current = viewModel.input_str.charAt(infix_length);
+            if ("+-*/^kng!tcs()ep".indexOf(viewModel.input_str.charAt(infix_length)) >= 0) {
                 infix_length++;
                 infix_list.add(current + "");
-            } else if ("0123456789".indexOf(input_str.charAt(infix_length)) >= 0) {
+            } else if ("0123456789".indexOf(viewModel.input_str.charAt(infix_length)) >= 0) {
                 StringBuilder str_temp = new StringBuilder();
-                while (infix_length < input_str.length() && "0123456789.".indexOf(input_str.charAt(infix_length)) >= 0) {
-                    str_temp.append(input_str.charAt(infix_length));
+                while (infix_length < viewModel.input_str.length() && "0123456789.".indexOf(viewModel.input_str.charAt(infix_length)) >= 0) {
+                    str_temp.append(viewModel.input_str.charAt(infix_length));
                     infix_length++;
                 }
                 infix_list.add(str_temp.toString());
             }
-        } while (infix_length < input_str.length());
+        } while (infix_length < viewModel.input_str.length());
         return infix_list;
     }
 
@@ -428,5 +476,10 @@ public class MainActivity extends AppCompatActivity {
             } else return 0;
         }
         return 0;
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeMenuProvider(menu);
     }
 }

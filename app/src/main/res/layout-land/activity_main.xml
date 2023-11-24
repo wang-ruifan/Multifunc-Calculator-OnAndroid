@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,24 +23,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="20sp"
-                android:background="@color/white"
+                android:background="@color/textView_background"
                 android:textColor="@color/red"/>
         </LinearLayout>
         <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.5"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="0dp"
         android:orientation="vertical">
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/editView_display"
-                android:layout_marginTop="10dp"
-                android:background="@color/white"
+                android:layout_marginTop="0dp"
+                android:background="@color/textView_background"
                 android:hint="  Please enter . . . . ."
-                android:textColorHint="@color/black"
+                android:textColorHint="@color/textView_text"
                 android:gravity="top"
                 android:textSize="30sp"
                 tools:ignore="Deprecated"
@@ -48,7 +49,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="4.5"
             android:background="@color/black"
             android:backgroundTint="@color/gray"
             android:orientation="vertical">
@@ -72,17 +73,16 @@
                     android:textSize="20sp"
                     android:background="@drawable/button_style"/>
 
-                <Button
+                <ImageButton
                     android:id="@+id/btn_delete"
                     android:onClick="delete"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-                    android:text="Delete"
-                    android:textColor="@color/red"
-                    android:textSize="20sp"
-                    android:background="@drawable/button_style"/>
+                    android:src="@drawable/img_backspace"
+                    android:background="@drawable/button_style"
+                    app:tint="@color/button_text" />
                 <Button
                     android:id="@+id/btn_left_bracket"
                     android:onClick="left_bracket"
