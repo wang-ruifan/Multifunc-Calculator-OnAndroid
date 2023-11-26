@@ -36,38 +36,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         editText_display = (EditText) findViewById(R.id.editView_display);
         textView_error = (TextView) findViewById(R.id.textView_error);
-        menu=new MainMenu();
+        menu = new MainMenu();
         addMenuProvider(menu);
     }
 
-    private class MainMenu implements MenuProvider{
+    private class MainMenu implements MenuProvider {
         @Override
-        public void onCreateMenu(Menu menu, MenuInflater menuInflater){
-            menuInflater.inflate(R.menu.activity_main,menu);
+        public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+            menuInflater.inflate(R.menu.activity_main, menu);
         }
+
         @Override
         public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-            if(menuItem.getItemId()==R.id.btn_log) {
+            if (menuItem.getItemId() == R.id.btn_log) {
                 showLog();
                 return true;
-            } else if(menuItem.getItemId()==R.id.btn_clear_log) {
+            } else if (menuItem.getItemId() == R.id.btn_clear_log) {
                 clearLog();
                 return true;
-            } else{
-                    return false;
+            } else {
+                return false;
             }
         }
     }
-    private void showLog(){
-        Intent intent=new Intent(this,LogActivity.class);
-        intent.putExtra("count",viewModel.getCount());
-        intent.putExtra("log",viewModel.log_history);
+
+    private void showLog() {
+        Intent intent = new Intent(this, LogActivity.class);
+        intent.putExtra("count", viewModel.getCount());
+        intent.putExtra("log", viewModel.log_history);
         startActivity(intent);
     }
-    private void clearLog(){
-        viewModel.clearlog_history();
-        Toast.makeText(this, String.format("历史记录已清除"), Toast.LENGTH_LONG).show();
+
+    private void clearLog() {
+        viewModel.clearLog_history();
+        Toast.makeText(this, "历史记录已清除", Toast.LENGTH_LONG).show();
     }
+
     public void num(View view) {
         Button button = (Button) view;
         editText_display.append(button.getText());
@@ -85,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             String now_display = editText_display.getText().toString();
             editText_display.setText(now_display.substring(0, now_display.length() - 1));
             viewModel.input_str.deleteCharAt(viewModel.input_str.length() - 1);
-        } else if (editText_display.length() == 0&&viewModel.input_str.length()!=0) {
+        } else if (editText_display.length() == 0 && viewModel.input_str.length() != 0) {
             viewModel.input_str.delete(0, viewModel.input_str.length());
         }
         textView_error.setText(null);
@@ -173,18 +177,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void subtract(View view) {
         editText_display.append("-");
-        if(viewModel.input_str.length()==0){
+        if (viewModel.input_str.length() == 0) {
             viewModel.input_str.append("0-");
-        }else {
+        } else {
             viewModel.input_str.append("-");
         }
     }
 
     public void add(View view) {
         editText_display.append("+");
-        if(viewModel.input_str.length()==0){
+        if (viewModel.input_str.length() == 0) {
             viewModel.input_str.append("0+");
-        }else {
+        } else {
             viewModel.input_str.append("+");
         }
     }
@@ -207,24 +211,24 @@ public class MainActivity extends AppCompatActivity {
             List<String> postfix = InfixTransToPostfix(infix);
             /*textView_error.setText(infix.toString());
             editText_display.append("\n"+postfix);*/
-            double result =calculate(postfix);
-            if(result%1<=0.0000000000001)result=(int)result;
-            if(!error_state){
-                viewModel.setLog(viewModel.input_str.toString(),result);
-                if((int)result-result==0){
-                    editText_display.append("\n" + (int)result);
-                    viewModel.input_str.delete(0,viewModel.input_str.length());
-                    if(result<0){
-                        viewModel.input_str.append("0"+(int)result);
-                    }else{
-                        viewModel.input_str.append((int)result);
+            double result = calculate(postfix);
+            if (result % 1 <= 0.0000000000001) result = (int) result;
+            if (!error_state) {
+                viewModel.setLog(viewModel.input_str.toString(), result);
+                if ((int) result - result == 0) {
+                    editText_display.append("\n" + (int) result);
+                    viewModel.input_str.delete(0, viewModel.input_str.length());
+                    if (result < 0) {
+                        viewModel.input_str.append("0").append((int) result);
+                    } else {
+                        viewModel.input_str.append((int) result);
                     }
-                }else{
+                } else {
                     editText_display.append("\n" + result);
-                    viewModel.input_str.delete(0,viewModel.input_str.length());
-                    if(result<0){
-                        viewModel.input_str.append("0"+result);
-                    }else{
+                    viewModel.input_str.delete(0, viewModel.input_str.length());
+                    if (result < 0) {
+                        viewModel.input_str.append("0").append(result);
+                    } else {
                         viewModel.input_str.append(result);
                     }
                 }
@@ -432,12 +436,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case "!": {
                         double num = Double.parseDouble(stack_temp.pop());
-                        if (num ==0||num==1) {
-                            temp=1;
-                        } else if (num==(int)num&&num>1) {
-                            temp=1;
-                            for(int i1=(int)num;i1>1;i1--){
-                                temp*=i1;
+                        if (num == 0 || num == 1) {
+                            temp = 1;
+                        } else if (num == (int) num && num > 1) {
+                            temp = 1;
+                            for (int i1 = (int) num; i1 > 1; i1--) {
+                                temp *= i1;
                             }
                         } else {
                             textView_error.setText("阶乘必须为自然数！");
@@ -447,12 +451,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case "t": {
                         double num = Double.parseDouble(stack_temp.pop());
-                        double pi=(double) Math.PI;
-                        if (Math.abs(num)%pi==pi/2) {
+                        double pi = (double) Math.PI;
+                        if (Math.abs(num) % pi == pi / 2) {
                             textView_error.setText("正切函数的输入值不能为(k+1/2)π!");
                             error_state = true;
                         } else {
-                            temp = Math.sin(num)/Math.cos(num);
+                            temp = Math.sin(num) / Math.cos(num);
                         }
                         break;
                     }
@@ -477,6 +481,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return 0;
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
