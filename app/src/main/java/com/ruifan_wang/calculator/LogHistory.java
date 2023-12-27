@@ -38,11 +38,7 @@ public class LogHistory implements Serializable {
 
     public void setLog_display() {
         String temp = transfer(log_String);
-        if ((int) log_answer == log_answer) {
-            log_display = temp + "=" + (int) log_answer;
-        } else {
-            log_display = temp + "=" + log_answer;
-        }
+        log_display = temp + "=";
     }
 
     private String transfer(String s) {

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,12 +33,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogRepository.initialize();
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         setContentView(R.layout.activity_main);
-        editText_display = (EditText) findViewById(R.id.editView_display);
-        textView_error = (TextView) findViewById(R.id.textView_error);
+        editText_display = findViewById(R.id.editView_display);
+        textView_error =  findViewById(R.id.textView_error);
         menu = new MainMenu();
         addMenuProvider(menu);
+        Log.d("MainActivity", "onCreate called");
+        Log.d("MainActivity", String.format("isEmpty: %s", getIntent().getBooleanExtra("isempty",true)));
+        if(!getIntent().getBooleanExtra("isempty",true)){
+            Log.d("MainActivity", "get answer called");
+            double got_answer=getIntent().getDoubleExtra("chosen_answer",0);
+            if ((int)got_answer==got_answer){
+                int temp=(int)got_answer;
+                viewModel.input_str=new StringBuilder().append(temp);
+                editText_display.setText(viewModel.input_str);
+            }else {
+                viewModel.input_str=new StringBuilder().append(got_answer);
+                editText_display.setText(viewModel.input_str);
+            }
+        }
     }
 
     private class MainMenu implements MenuProvider {
@@ -62,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void showLog() {
         Intent intent = new Intent(this, LogActivity.class);
-        intent.putExtra("count", viewModel.getCount());
-        intent.putExtra("log", viewModel.log_history);
         startActivity(intent);
     }
 
@@ -451,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case "t": {
                         double num = Double.parseDouble(stack_temp.pop());
-                        double pi = (double) Math.PI;
+                        double pi = Math.PI;
                         if (Math.abs(num) % pi == pi / 2) {
                             textView_error.setText("正切函数的输入值不能为(k+1/2)π!");
                             error_state = true;

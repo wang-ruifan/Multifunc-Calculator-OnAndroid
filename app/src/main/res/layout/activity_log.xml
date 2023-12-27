@@ -1,84 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/log_1"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/log_history_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_margin="10dp"
-        android:textSize="20dp"
-        android:hint="   暂无历史记录                                                 计算后的表达式和结果会显示在此"
-        android:textColor="@color/textView_text"
-        android:gravity="center"/>
-    <TextView
-        android:id="@+id/log_2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_margin="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/textView_text"
-        android:gravity="center"/>
-    <TextView
-        android:id="@+id/log_3"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_margin="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/textView_text"
-        android:gravity="center"/>
-    <TextView
-        android:id="@+id/log_4"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_margin="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/textView_text"
-        android:gravity="center"/>
-    <TextView
-        android:id="@+id/log_5"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_margin="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/textView_text"
-        android:gravity="center"/>
-    <TextView
-        android:id="@+id/log_6"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_margin="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/textView_text"
-        android:gravity="center"/>
-    <TextView
-        android:id="@+id/log_7"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_margin="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/textView_text"
-        android:gravity="center"/>
-    <TextView
-        android:id="@+id/log_8"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_margin="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/textView_text"
-        android:gravity="center"/>
-
+        android:layout_height="match_parent"/>
 </LinearLayout>

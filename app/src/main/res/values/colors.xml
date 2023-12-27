@@ -15,4 +15,5 @@
     <color name="button_text">#FF000000</color>
     <color name="textView_background">#FFFFFFFF</color>
     <color name="textView_text">#FF000000</color>
+    <color name="answer_text">#FF0000FF</color>
 </resources>
