@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean error_state;
     private MainMenu menu;
     private MainViewModel viewModel;
+    private double precision=0.0000001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,25 +227,15 @@ public class MainActivity extends AppCompatActivity {
             /*textView_error.setText(infix.toString());
             editText_display.append("\n"+postfix);*/
             double result = calculate(postfix);
-            if (result % 1 <= 0.0000000000001) result = (int) result;
+            if (result % 1 <= precision) result = (int) result;
             if (!error_state) {
                 viewModel.setLog(viewModel.input_str.toString(), result);
-                if ((int) result - result == 0) {
-                    editText_display.append("\n" + (int) result);
-                    viewModel.input_str.delete(0, viewModel.input_str.length());
-                    if (result < 0) {
-                        viewModel.input_str.append("0").append((int) result);
-                    } else {
-                        viewModel.input_str.append((int) result);
-                    }
+                editText_display.append("\n" + result);
+                viewModel.input_str.delete(0, viewModel.input_str.length());
+                if (result < 0) {
+                    viewModel.input_str.append("0").append(result);
                 } else {
-                    editText_display.append("\n" + result);
-                    viewModel.input_str.delete(0, viewModel.input_str.length());
-                    if (result < 0) {
-                        viewModel.input_str.append("0").append(result);
-                    } else {
-                        viewModel.input_str.append(result);
-                    }
+                    viewModel.input_str.append(result);
                 }
             }
         }
