@@ -17,6 +17,10 @@
             android:exported="false"
             android:theme="@style/Theme.Calculator" />
         <activity
+            android:name=".BillResultActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Calculator" />
+        <activity
             android:name=".LogActivity"
             android:exported="false" />
         <activity
