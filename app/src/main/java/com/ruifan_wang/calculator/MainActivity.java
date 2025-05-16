@@ -68,8 +68,9 @@ public class MainActivity extends AppCompatActivity {
             if (menuItem.getItemId() == R.id.btn_log) {
                 showLog();
                 return true;
-            } else if (menuItem.getItemId() == R.id.btn_clear_log) {
-                clearLog();
+            } else if (menuItem.getItemId() == R.id.btn_bill) {
+                Intent intent = new Intent(MainActivity.this, BillActivity.class);
+                startActivity(intent);
                 return true;
             } else {
                 return false;

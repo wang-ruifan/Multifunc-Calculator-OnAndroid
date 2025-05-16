@@ -13,6 +13,10 @@
         android:theme="@style/Theme.Calculator"
         tools:targetApi="31">
         <activity
+            android:name=".BillActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Calculator" />
+        <activity
             android:name=".LogActivity"
             android:exported="false" />
         <activity

@@ -29,7 +29,8 @@ public class LogActivity extends AppCompatActivity {
             GridLayoutManager gridLayoutManager=new GridLayoutManager(LogActivity.this,2,GridLayoutManager.VERTICAL,false);
             recyclerView.setLayoutManager(gridLayoutManager);
         }
-        recyclerView.setAdapter(new MyLogRecyclerViewAdapter(viewModel.getLogList()));
+        recyclerView.setAdapter(new MyLogRecyclerViewAdapter(
+                viewModel.getLogList()));
 
         addMenuProvider(new MenuProvider() {
             @Override
