@@ -1,7 +1,7 @@
 package com.ruifan_wang.calculator;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,11 +50,12 @@ public class MyLogRecyclerViewAdapter extends RecyclerView.Adapter<MyLogRecycler
         public LogItemViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(view -> {
-                Context context=view.getContext();
-                Intent intent=new Intent(context,MainActivity.class);
-                intent.putExtra("isempty",isEmpty);
-                intent.putExtra("chosen_answer",chosen_answer);
-                context.startActivity(intent);
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("isempty", isEmpty);
+                resultIntent.putExtra("chosen_answer", chosen_answer);
+                Activity activity = (Activity) view.getContext();
+                activity.setResult(Activity.RESULT_OK, resultIntent);
+                activity.finish();
             });
             log=itemView.findViewById(R.id.log);
             answer=itemView.findViewById(R.id.answer);

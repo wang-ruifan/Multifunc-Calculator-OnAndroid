@@ -13,4 +13,8 @@ public class LogViewModel extends ViewModel {
     public List getLogList(){
         return log_history;
     }
+    public void clearLog_history() {
+        LogRepository.getInstance().clearLog_history();
+        log_history = LogRepository.getInstance().mLogHistoryList;
+    }
 }

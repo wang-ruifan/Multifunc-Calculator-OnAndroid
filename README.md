@@ -23,8 +23,9 @@
     git clone https://github.com/yourusername/Android-calculator.git
     ```
 2. 使用 Android Studio 打开项目。
-3. 连接你的 Android 设备或启动模拟器。
-4. 点击运行按钮将应用程序安装到设备上。
+3. 非常关键！ 安装jdk11并设置编译gradle jdk为11
+4. 连接你的 Android 设备或启动模拟器。
+5. 点击运行按钮将应用程序安装到设备上。
 
 ### 下载APK文件  
 
