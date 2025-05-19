@@ -7,6 +7,8 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +48,18 @@ public class BillActivity extends AppCompatActivity {
         personAmountInputs.clear();
         peopleCount = n;
         for (int i = 1; i <= n; i++) {
+            CardView card = new CardView(this);
+
+            card.setRadius(12);
+            card.setCardElevation(4);
+            LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            cardParams.setMargins(0, 8, 0, 8);
+            card.setLayoutParams(cardParams);
+
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setPadding(16, 16, 16, 16);
 
             EditText nameEt = new EditText(this);
             nameEt.setHint("人名");
@@ -60,7 +72,8 @@ public class BillActivity extends AppCompatActivity {
             amountEt.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
             row.addView(amountEt);
 
-            personInputContainer.addView(row);
+            card.addView(row);
+            personInputContainer.addView(card);
             personNameInputs.add(nameEt);
             personAmountInputs.add(amountEt);
         }
