@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:id="@+id/bill_container"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- 人数输入 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0sp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="总人数"
+                    android:textSize="20dp"
+                    android:gravity="center"/>
+
+                <NumberPicker
+                    android:id="@+id/number_picker"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <!-- 总金额输入 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0sp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="共同金额"
+                    android:textSize="20dp"
+                    android:gravity="center"/>
+
+                <EditText
+                    android:id="@+id/edit_total_amount"
+                    android:hint="请输入金额(支持加法)"
+                    android:inputType="text"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"/>
+
+            </LinearLayout>
+
+            <!-- 动态添加每个人金额输入框的容器 -->
+            <LinearLayout
+                android:id="@+id/person_input_container"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 悬浮计算按钮 -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:contentDescription="计算"
+        android:src="@drawable/bill_cal"
+        app:backgroundTint="@color/orange"
+        app:borderWidth="0dp"
+        app:elevation="5dp"
+        app:fabCustomSize="72dp"
+        app:maxImageSize="48dp"
+        app:layout_anchorGravity="bottom|right|end"
+        app:pressedTranslationZ="10dp"
+        app:rippleColor="@color/green"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
