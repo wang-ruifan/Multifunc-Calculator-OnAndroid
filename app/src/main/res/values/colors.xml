@@ -16,4 +16,5 @@
     <color name="textView_background">#FFFFFFFF</color>
     <color name="textView_text">#FF000000</color>
     <color name="answer_text">#FF0000FF</color>
+    <color name="bill_text_color">#FF000000</color>
 </resources>

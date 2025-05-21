@@ -37,7 +37,7 @@
                         android:layout_height="wrap_content"
                         android:text="总人数"
                         android:textSize="18sp"
-                        android:textColor="@color/black"
+                        android:textColor="@color/bill_text_color"
                         android:gravity="center"/>
 
                     <NumberPicker
@@ -69,7 +69,7 @@
                         android:layout_height="wrap_content"
                         android:text="共同金额"
                         android:textSize="18sp"
-                        android:textColor="@color/black"
+                        android:textColor="@color/bill_text_color"
                         android:gravity="center"/>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -84,8 +84,6 @@
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-            <!-- 在动态添加每个人输入时，使用CardView包裹 -->
 
             <LinearLayout
                 android:id="@+id/person_input_container"
