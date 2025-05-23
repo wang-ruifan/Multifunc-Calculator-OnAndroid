@@ -35,6 +35,7 @@ public class BillActivity extends AppCompatActivity {
         numberPicker.setMinValue(2);
         numberPicker.setMaxValue(10);
         numberPicker.setValue(2);
+        numberPicker.setWrapSelectorWheel(false);
         numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> updatePersonInputs(newVal));
 
         updatePersonInputs(2);
@@ -43,13 +44,12 @@ public class BillActivity extends AppCompatActivity {
     }
 
     private void updatePersonInputs(int n) {
-        personInputContainer.removeAllViews();
-        personNameInputs.clear();
-        personAmountInputs.clear();
-        peopleCount = n;
-        for (int i = 1; i <= n; i++) {
-            CardView card = new CardView(this);
+        int oldCount = personInputContainer.getChildCount();
 
+        personInputContainer.setLayoutTransition(new android.animation.LayoutTransition());
+        // 增加新的人数输入
+        for (int i = oldCount; i < n; i++) {
+            CardView card = new CardView(this);
             card.setRadius(12);
             card.setCardElevation(4);
             LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
@@ -77,6 +77,15 @@ public class BillActivity extends AppCompatActivity {
             personNameInputs.add(nameEt);
             personAmountInputs.add(amountEt);
         }
+
+        // 删除多余的人数输入
+        for (int i = oldCount - 1; i >= n; i--) {
+            personInputContainer.removeViewAt(i);
+            personNameInputs.remove(i);
+            personAmountInputs.remove(i);
+        }
+
+        peopleCount = n;
     }
 
     // 解析加法表达式

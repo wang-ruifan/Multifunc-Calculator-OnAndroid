@@ -44,7 +44,7 @@ public class MyLogRecyclerViewAdapter extends RecyclerView.Adapter<MyLogRecycler
     public static class LogItemViewHolder extends RecyclerView.ViewHolder{
         private final TextView log;
         private final TextView answer;
-        private double chosen_answer;
+        private String chosen_answer;
         private boolean isEmpty=true;
 
         public LogItemViewHolder(@NonNull View itemView) {
@@ -68,13 +68,34 @@ public class MyLogRecyclerViewAdapter extends RecyclerView.Adapter<MyLogRecycler
             }else {
                 log.setText(log_history.getLog_display());
                 isEmpty=false;
-                chosen_answer=log_history.getLog_answer();
-                if ((int) log_history.getLog_answer() == log_history.getLog_answer()) {
-                    answer.setText(String.format("%d" ,(int)log_history.getLog_answer()));
+                double answer_value=log_history.getLog_answer();
+                if ((int) answer_value == answer_value) {
+                    answer.setText(String.format("%d" ,(int)answer_value));
+                    chosen_answer= String.format("%d",(int)answer_value);
                 } else {
-                    answer.setText(String.format("%.2f",log_history.getLog_answer()));
+                    // 小数情况 - 使用智能格式化处理
+                    String formattedValue = formatDecimal(answer_value);
+                    answer.setText(formattedValue);
+                    chosen_answer= String.valueOf(answer_value);
                 }
             }
         }
+
+        @SuppressLint("DefaultLocale")
+        private String formatDecimal(double value) {
+            // 先转成字符串看有多少小数位
+            String plainStr = String.valueOf(value);
+
+            // 如果小数点后超过4位，格式化为4位
+            if (plainStr.contains(".") &&
+                    plainStr.substring(plainStr.indexOf(".") + 1).length() > 4) {
+                return String.format("%.4f", value);
+            }
+
+            // 否则保持原样，避免添加不必要的0
+            return plainStr;
+        }
     }
 }
+
+

@@ -29,20 +29,31 @@ public class BillResultActivity extends AppCompatActivity {
             card.setCardElevation(8);
             LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            cardParams.setMargins(16, 16, 16, 0);
+            cardParams.setMargins(16, 24, 16, 24);
             card.setLayoutParams(cardParams);
 
             TextView tv = new TextView(this);
-            String line = name + " 需要支付：" + String.format("%.2f", pay[i]) + "\n";
+            String line = name + " 需付：" + String.format("%.2f", pay[i]);
             tv.setText(line);
-            tv.setTextSize(22);
+            tv.setTextSize(23);
             tv.setPadding(32, 32, 32, 32);
+            tv.setTextColor(getResources().getColor(R.color.bill_result_text_color, getTheme()));
 
             card.addView(tv);
             layout.addView(card);
             sb.append(line).append("\n");
+
+            card.setOnClickListener(v -> {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("支付信息", line.trim());
+                clipboard.setPrimaryClip(clip);
+                android.widget.Toast.makeText(this, "已复制: " + line.trim(), android.widget.Toast.LENGTH_SHORT).show();
+            });
         }
         setContentView(layout);
+        if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '\n') {
+            sb.deleteCharAt(sb.length() - 1);
+        }
         shareString = sb.toString();
     }
 
@@ -69,3 +80,4 @@ public class BillResultActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent, "分享账单"));
     }
 }
+

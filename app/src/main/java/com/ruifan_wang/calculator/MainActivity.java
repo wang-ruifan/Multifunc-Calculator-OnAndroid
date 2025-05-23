@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,7 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean error_state;
     private MainMenu menu;
     private MainViewModel viewModel;
-    private double precision=0.0000001;
+
+    private ActivityResultLauncher<Intent> logActivityLauncher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +46,23 @@ public class MainActivity extends AppCompatActivity {
         menu = new MainMenu();
         addMenuProvider(menu);
         Log.d("MainActivity", "onCreate called");
-        Log.d("MainActivity", String.format("isEmpty: %s", getIntent().getBooleanExtra("isempty",true)));
-        if(!getIntent().getBooleanExtra("isempty",true)){
-            Log.d("MainActivity", "get answer called");
-            double got_answer=getIntent().getDoubleExtra("chosen_answer",0);
-            if ((int)got_answer==got_answer){
-                int temp=(int)got_answer;
-                viewModel.input_str=new StringBuilder().append(temp);
-                editText_display.setText(viewModel.input_str);
-            }else {
-                viewModel.input_str=new StringBuilder().append(got_answer);
-                editText_display.setText(viewModel.input_str);
-            }
-        }
+
+        logActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Intent data = result.getData();
+                        if (!data.getBooleanExtra("isempty", true)) {
+                            String chosen_answer = data.getStringExtra("chosen_answer");
+                            if(chosen_answer != null) {
+                                editText_display.setText(chosen_answer);
+                                viewModel.input_str.delete(0, viewModel.input_str.length());
+                                viewModel.input_str.append(chosen_answer);
+                            }
+                        }
+                    }
+                }
+        );
     }
 
     private class MainMenu implements MenuProvider {
@@ -72,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, BillActivity.class);
                 startActivity(intent);
                 return true;
+            } else if (menuItem.getItemId() == R.id.btn_exchange) {
+                Intent intent = new Intent(MainActivity.this, ExchangeActivity.class);
+                startActivity(intent);
+                return true;
             } else {
                 return false;
             }
@@ -80,12 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showLog() {
         Intent intent = new Intent(this, LogActivity.class);
-        startActivity(intent);
-    }
-
-    private void clearLog() {
-        viewModel.clearLog_history();
-        Toast.makeText(this, "历史记录已清除", Toast.LENGTH_LONG).show();
+        logActivityLauncher.launch(intent);
     }
 
     public void num(View view) {
@@ -225,21 +232,45 @@ public class MainActivity extends AppCompatActivity {
         if (!error_state) {
             List<String> infix = CharTransToInfix();
             List<String> postfix = InfixTransToPostfix(infix);
-            /*textView_error.setText(infix.toString());
-            editText_display.append("\n"+postfix);*/
             double result = calculate(postfix);
-            if (result % 1 <= precision) result = (int) result;
+            double precision = 0.000001;
+            boolean isInteger = (Math.abs(result % 1) <= precision);
+
+
             if (!error_state) {
                 viewModel.setLog(viewModel.input_str.toString(), result);
-                editText_display.append("\n" + result);
-                viewModel.input_str.delete(0, viewModel.input_str.length());
-                if (result < 0) {
-                    viewModel.input_str.append("0").append(result);
+
+                // 根据是否为整数选择显示格式
+                if (isInteger) {
+                    int intResult = (int) result;
+                    editText_display.append("\n" + intResult);
+                    viewModel.input_str.delete(0, viewModel.input_str.length());
+                    viewModel.input_str.append(intResult);
                 } else {
-                    viewModel.input_str.append(result);
+                    String formattedValue = formatDecimal(result);
+                    editText_display.append("\n" + formattedValue);
+                    viewModel.input_str.delete(0, viewModel.input_str.length());
+                    if (result < 0) {
+                        viewModel.input_str.append("0").append(formattedValue);
+                    } else {
+                        viewModel.input_str.append(formattedValue);
+                    }
                 }
             }
         }
+    }
+
+    private String formatDecimal(double value) {
+        // 先转成字符串看有多少小数位
+        String plainStr = String.valueOf(value);
+
+        if (plainStr.contains(".") &&
+                plainStr.substring(plainStr.indexOf(".") + 1).length() > 10) {
+            return String.format("%.10f", value);
+        }
+
+        // 否则保持原样，避免添加不必要的0
+        return plainStr;
     }
 
     public void judge() {

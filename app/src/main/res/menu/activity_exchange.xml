@@ -5,12 +5,5 @@
         android:id="@+id/btn_log"
         android:title="历史记录"
         app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/btn_bill"
-        android:title="算账"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/btn_exchange"
-        android:title="汇率换算"
-        app:showAsAction="ifRoom"/>
 </menu>
+

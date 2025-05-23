@@ -17,4 +17,5 @@
     <color name="textView_text">#FF000000</color>
     <color name="answer_text">#FF0000FF</color>
     <color name="bill_text_color">#FF000000</color>
+    <color name="bill_result_text_color">#FF7B7B7B</color>
 </resources>
