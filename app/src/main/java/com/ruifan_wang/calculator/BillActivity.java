@@ -32,6 +32,12 @@ public class BillActivity extends AppCompatActivity {
         personInputContainer = findViewById(R.id.person_input_container);
         FloatingActionButton fab = findViewById(R.id.fab);
 
+        // 自动填充共同金额
+        String calcResult = getIntent().getStringExtra("calc_result");
+        if (calcResult != null && !calcResult.isEmpty()) {
+            editTotalAmount.setText(calcResult);
+        }
+
         numberPicker.setMinValue(2);
         numberPicker.setMaxValue(10);
         numberPicker.setValue(2);
@@ -122,3 +128,4 @@ public class BillActivity extends AppCompatActivity {
         }
     }
 }
+

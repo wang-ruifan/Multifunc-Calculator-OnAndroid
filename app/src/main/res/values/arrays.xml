@@ -1,15 +1,15 @@
 <resources>
     <string-array name="currency_array">
-        <item>USD</item>
         <item>CNY</item>
-        <item>EUR</item>
-        <item>JPY</item>
-        <item>GBP</item>
         <item>HKD</item>
-        <item>KRW</item>
-        <item>RUB</item>
+        <item>USD</item>
+        <item>EUR</item>
         <item>AUD</item>
+        <item>GBP</item>
+        <item>RUB</item>
         <item>CAD</item>
+        <item>KRW</item>
+        <item>JPY</item>
     </string-array>
 </resources>
 

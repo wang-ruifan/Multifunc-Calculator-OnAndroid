@@ -7,66 +7,31 @@
     android:layout_height="match_parent"
     tools:context=".ExchangeActivity">
 
-    <EditText
-        android:id="@+id/edit_amount"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="请输入金额"
-        android:inputType="numberDecimal"
+        android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"/>
+        android:layout_margin="8dp">
 
-    <Spinner
-        android:id="@+id/spinner_from"
-        android:layout_width="0dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_currency"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/edit_amount"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/spinner_to"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="8dp"
-        android:entries="@array/currency_array"/>
-
-    <Spinner
-        android:id="@+id/spinner_to"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/edit_amount"
-        app:layout_constraintStart_toEndOf="@id/spinner_from"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="24dp"
-        android:entries="@array/currency_array"/>
-
-    <Button
-        android:id="@+id/btn_convert"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="换算"
-        app:layout_constraintTop_toBottomOf="@id/spinner_from"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"/>
-
-    <TextView
-        android:id="@+id/text_result"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="结果："
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/btn_convert"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

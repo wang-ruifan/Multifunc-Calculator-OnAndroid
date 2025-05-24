@@ -77,11 +77,20 @@ public class MainActivity extends AppCompatActivity {
                 showLog();
                 return true;
             } else if (menuItem.getItemId() == R.id.btn_bill) {
+                // 获取当前计算结果
+                String displayText = editText_display.getText() != null ? editText_display.getText().toString() : "";
+                String[] lines = displayText.split("\\n");
+                String result = lines.length > 1 ? lines[lines.length - 1] : "";
                 Intent intent = new Intent(MainActivity.this, BillActivity.class);
+                intent.putExtra("calc_result", result);
                 startActivity(intent);
                 return true;
             } else if (menuItem.getItemId() == R.id.btn_exchange) {
+                String displayText = editText_display.getText() != null ? editText_display.getText().toString() : "";
+                String[] lines = displayText.split("\\n");
+                String result = lines.length > 1 ? lines[lines.length - 1] : "";
                 Intent intent = new Intent(MainActivity.this, ExchangeActivity.class);
+                intent.putExtra("calc_result", result);
                 startActivity(intent);
                 return true;
             } else {
