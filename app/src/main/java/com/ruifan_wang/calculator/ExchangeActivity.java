@@ -309,7 +309,7 @@ public class ExchangeActivity extends AppCompatActivity implements CurrencyAdapt
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_exchange, menu);
-
+        setTitle("汇率计算器");
         return true;
     }
 

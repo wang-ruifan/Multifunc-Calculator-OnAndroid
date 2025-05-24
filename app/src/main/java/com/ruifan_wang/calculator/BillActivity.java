@@ -26,6 +26,7 @@ public class BillActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill);
+        setTitle("算账器");
 
         numberPicker = findViewById(R.id.number_picker);
         editTotalAmount = findViewById(R.id.edit_total_amount);

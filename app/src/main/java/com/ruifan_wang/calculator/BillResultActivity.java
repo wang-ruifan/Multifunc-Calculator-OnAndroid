@@ -51,6 +51,7 @@ public class BillResultActivity extends AppCompatActivity {
             });
         }
         setContentView(layout);
+        setTitle("账单结果");
         if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '\n') {
             sb.deleteCharAt(sb.length() - 1);
         }

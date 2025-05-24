@@ -36,6 +36,7 @@ public class LogActivity extends AppCompatActivity {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menuInflater.inflate(R.menu.activity_log, menu);
+                setTitle("历史记录");
             }
 
             @Override

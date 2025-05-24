@@ -10,9 +10,9 @@ android {
     defaultConfig {
         applicationId "com.ruifan_wang.calculator"
         minSdk 30
-        targetSdk 32
+        targetSdk 33
         versionCode 1
-        versionName "2.0"
+        versionName "2.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

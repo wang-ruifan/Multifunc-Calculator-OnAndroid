@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -45,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
         textView_error =  findViewById(R.id.textView_error);
         menu = new MainMenu();
         addMenuProvider(menu);
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setTitle("计算器");
+        } else {
+            setTitle("科学计算器");
+        }
+
         Log.d("MainActivity", "onCreate called");
 
         logActivityLauncher = registerForActivityResult(
