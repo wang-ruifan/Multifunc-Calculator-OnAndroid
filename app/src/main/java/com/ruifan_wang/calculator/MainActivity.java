@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogRepository.initialize();
+        LogRepository.initialize(getApplicationContext()); // 传入应用上下文
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         setContentView(R.layout.activity_main);
         editText_display = findViewById(R.id.editView_display);
