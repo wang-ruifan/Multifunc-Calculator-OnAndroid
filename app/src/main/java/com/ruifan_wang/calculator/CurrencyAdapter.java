@@ -25,17 +25,24 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
     private final Context context;
     private int lastChangedPosition = -1;
     private final DecimalFormat decimalFormat;
-    // 添加一个变量来跟踪有焦点的EditText
     private EditText focusedEditText = null;
-    // 添加触摸帮助器引用
     private ItemTouchHelper touchHelper;
+
+    private static final String PAYLOAD_FORCE_TEXT_UPDATE = "FORCE_TEXT_UPDATE";
+    private static final String PAYLOAD_UPDATE_VALUES = "update_values";
 
     // 监听器接口，用于通知外部活动金额改变
     public interface CurrencyValueChangeListener {
         void onCurrencyValueChanged(int position, double value);
     }
 
+    // 添加焦点变化监听器接口
+    public interface FocusChangeListener {
+        void onFocusChanged(int position);
+    }
+
     private CurrencyValueChangeListener listener;
+    private FocusChangeListener focusListener;
 
     public CurrencyAdapter(Context context, List<Currency> currencies) {
         this.context = context;
@@ -51,6 +58,11 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
         this.listener = listener;
     }
 
+    // 添加设置焦点变化监听器的方法
+    public void setFocusChangeListener(FocusChangeListener listener) {
+        this.focusListener = listener;
+    }
+
     @NonNull
     @Override
     public CurrencyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,8 +72,39 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
 
     @Override
     public void onBindViewHolder(@NonNull CurrencyViewHolder holder, int position) {
-        Currency currency = currencies.get(position);
+        // This version is called for full binds
+        bindViewHolderInternal(holder, position, currencies.get(position), false);
+    }
 
+    @Override
+    public void onBindViewHolder(@NonNull CurrencyViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position); // Fallback to full bind
+        } else {
+            Currency currency = currencies.get(position);
+            boolean forceTextUpdate = false;
+            boolean valueUpdateSignal = false;
+
+            for (Object payload : payloads) {
+                if (PAYLOAD_FORCE_TEXT_UPDATE.equals(payload)) {
+                    forceTextUpdate = true;
+                }
+                if (PAYLOAD_UPDATE_VALUES.equals(payload)) {
+                    valueUpdateSignal = true;
+                }
+            }
+
+            if (forceTextUpdate) {
+                bindViewHolderInternal(holder, position, currency, true);
+            } else if (valueUpdateSignal) {
+                bindViewHolderInternal(holder, position, currency, false);
+            } else {
+                super.onBindViewHolder(holder, position, payloads);
+            }
+        }
+    }
+
+    private void bindViewHolderInternal(@NonNull CurrencyViewHolder holder, int position, Currency currency, boolean forceTextUpdate) {
         // 设置货币代码
         holder.textCurrencyCode.setText(currency.getCode());
 
@@ -71,7 +114,6 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
         if (flagResId != 0) {
             holder.imgFlag.setImageResource(flagResId);
         } else {
-            // 如果找不到国旗资源，设置一个默认图像
             holder.imgFlag.setImageResource(R.drawable.ic_launcher_foreground);
         }
 
@@ -91,13 +133,14 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
             if (hasFocus) {
                 lastChangedPosition = holder.getAdapterPosition();
                 focusedEditText = holder.editAmount;
+                if (focusListener != null) {
+                    focusListener.onFocusChanged(holder.getAdapterPosition());
+                }
             }
         });
 
-        // 只有在这个条目不是我们正在编辑的条目时才更新文本
         holder.editAmount.removeTextChangedListener(holder.textWatcher);
-        if (position != lastChangedPosition || holder.editAmount != focusedEditText) {
-            // 如果这个EditText不是当前有焦点的EditText，则更新其值
+        if (forceTextUpdate || (position != lastChangedPosition || holder.editAmount != focusedEditText)) {
             holder.editAmount.setText(currency.getAmount() > 0
                     ? decimalFormat.format(currency.getAmount())
                     : "");
@@ -112,7 +155,6 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
 
     // 处理项目移动
     public void onItemMove(int fromPosition, int toPosition) {
-        // 交换位置，更新列表数据
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
                 Collections.swap(currencies, i, i + 1);
@@ -125,51 +167,50 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    // 拖拽完成时调用
     public void onDragCompleted() {
-        // 拖拽完成后重新计算所有货币值
         if (lastChangedPosition >= 0 && lastChangedPosition < currencies.size()) {
             Currency baseCurrency = currencies.get(lastChangedPosition);
-            if (baseCurrency.getAmount() > 0) {
+            if (baseCurrency.getAmount() >= 0) {
                 updateCurrencyValues(lastChangedPosition, baseCurrency.getAmount());
             }
         }
     }
 
-    // 更新所有货币的金额，基于选定的货币和金额
     public void updateCurrencyValues(int changedPosition, double value) {
         if (changedPosition < 0 || changedPosition >= currencies.size()) {
-            return; // 避免数组越界
+            return;
         }
 
-        // 保存当前的焦点EditText
         EditText currentFocused = focusedEditText;
 
         Currency baseCurrency = currencies.get(changedPosition);
+        baseCurrency.setAmount(value);
+
         double baseValue = value;
         double baseRate = baseCurrency.getRate();
 
-        // 计算结果的基准值（相对于1美元的金额）
-        double baseAmount = baseValue / baseRate;
+        double baseAmount = (baseRate == 0) ? 0 : (baseValue / baseRate);
 
         for (int i = 0; i < currencies.size(); i++) {
             if (i != changedPosition) {
                 Currency currency = currencies.get(i);
-                // 使用基准值乘以目标货币汇率，得到正确的换算金额
                 double newAmount = baseAmount * currency.getRate();
                 currency.setAmount(newAmount);
             }
         }
 
-        lastChangedPosition = changedPosition;
+        this.lastChangedPosition = changedPosition;
 
-        // 使用notifyItemRangeChanged代替notifyDataSetChanged，这样会保留输入框焦点
-        notifyItemRangeChanged(0, currencies.size(), "update_values");
+        notifyItemRangeChanged(0, currencies.size(), PAYLOAD_UPDATE_VALUES);
 
-        // 确保焦点保持在用户正在编辑的EditText上
-        if (currentFocused != null) {
+        if (currentFocused != null && currentFocused.hasFocus()) {
             currentFocused.requestFocus();
         }
+    }
+
+    public void updateCurrencyValuesAndForceRefresh(int changedPosition, double value) {
+        updateCurrencyValues(changedPosition, value);
+        notifyItemChanged(changedPosition, PAYLOAD_FORCE_TEXT_UPDATE);
     }
 
     class CurrencyViewHolder extends RecyclerView.ViewHolder {
@@ -202,9 +243,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
                         try {
                             String text = s.toString().replace(",", "");
                             if (text.isEmpty()) {
-                                // 如果为空，设置为0并触发更新
                                 currencies.get(position).setAmount(0);
-                                // 添加触发更新的代码，确保当输入为空时也会更新其他货币值为0
                                 if (listener != null && editAmount.hasFocus()) {
                                     listener.onCurrencyValueChanged(position, 0);
                                 }
@@ -216,7 +255,6 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
                                 }
                             }
                         } catch (NumberFormatException e) {
-                            // 忽略格式错误
                         }
                     }
                 }

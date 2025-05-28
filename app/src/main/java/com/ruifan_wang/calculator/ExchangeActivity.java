@@ -40,6 +40,9 @@ public class ExchangeActivity extends AppCompatActivity implements CurrencyAdapt
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar progressBar;
 
+    // 添加一个变量来跟踪最后聚焦的货币位置
+    private int lastFocusedPosition = 0;
+
     private static final String PREF_CURRENCY_ORDER = "currency_order";
     private static final String PREFS_NAME = "exchange_preferences";
     private static final String PREF_LAST_UPDATE = "last_update_time";
@@ -109,6 +112,9 @@ public class ExchangeActivity extends AppCompatActivity implements CurrencyAdapt
         adapter = new CurrencyAdapter(this, currencies);
         adapter.setCurrencyValueChangeListener(this);
 
+        // 设置焦点变化监听器，以跟踪最后聚焦的位置
+        adapter.setFocusChangeListener(position -> lastFocusedPosition = position);
+
         // 初始化拖拽排序功能
         ItemTouchHelper.Callback callback = new CurrencyItemTouchHelperCallback(adapter, this);
         itemTouchHelper = new ItemTouchHelper(callback);
@@ -138,12 +144,12 @@ public class ExchangeActivity extends AppCompatActivity implements CurrencyAdapt
                         Intent data = result.getData();
                         if (!data.getBooleanExtra("isempty", true)) {
                             String chosen_answer = data.getStringExtra("chosen_answer");
-                            if(chosen_answer != null && !chosen_answer.isEmpty()) {
+                            if (chosen_answer != null && !chosen_answer.isEmpty()) {
                                 try {
                                     double value = Double.parseDouble(chosen_answer);
-                                    // 将历史记录结果填充到第一个货币输入框并更新所有货币值
-                                    currencies.get(0).setAmount(value);
-                                    adapter.updateCurrencyValues(0, value);
+                                    // 使用最后聚焦的位置填充历史记录结果
+                                    currencies.get(lastFocusedPosition).setAmount(value); // 先更新数据模型
+                                    adapter.updateCurrencyValuesAndForceRefresh(lastFocusedPosition, value); // 调用新方法
                                 } catch (NumberFormatException e) {
                                     Toast.makeText(this, "输入的金额格式无效", Toast.LENGTH_SHORT).show();
                                 }
