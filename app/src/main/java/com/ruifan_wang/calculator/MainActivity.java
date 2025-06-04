@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.Stack;
@@ -64,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                             String chosen_answer = data.getStringExtra("chosen_answer");
                             if(chosen_answer != null) {
                                 editText_display.setText(chosen_answer);
+                                // 将光标移动到文本末尾
+                                editText_display.setSelection(editText_display.getText().length());
                                 viewModel.input_str.delete(0, viewModel.input_str.length());
                                 viewModel.input_str.append(chosen_answer);
                             }
